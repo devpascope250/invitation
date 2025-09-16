@@ -39,7 +39,7 @@ export default function ConfirmInvitationPage() {
   const router = useRouter();
   const [saveMessage, setSaveMessage] = useState("");
   const [saveError, setSaveError] = useState("");
-  const invitationId = parseInt(params.id as string);
+  const invitationId = params.id as string;
 
   // Get invitation ID from URL
   const { data: invitation, isLoading: loadingInvitation } =
