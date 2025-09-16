@@ -9,7 +9,6 @@ import React, { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { InvitationCard, InvitationStatus } from "@prisma/client";
-import { render } from "ejs";
 export function AdminDashboard() {
   const { useApiQuery, api, useApiPost, queryClient } = useApi();
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -175,6 +174,7 @@ export function AdminDashboard() {
         <Button
           onClick={async () => {
             await generateAllInvitations({});
+            queryClient.invalidateQueries({ queryKey: ["invitations"] });
           }}
           size={"sm"}
           variant={"outline"}
