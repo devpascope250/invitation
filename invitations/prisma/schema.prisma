@@ -24,7 +24,7 @@ model Graduation_student {
 }
 
 model InvitationCard {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(uuid())
   regNumber    String?
   Image        String?
   secretKey    String?

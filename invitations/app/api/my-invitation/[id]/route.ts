@@ -8,7 +8,7 @@ export async function GET(request: NextRequest, {params}: {params: Promise<{id: 
     
     const user = await prisma.invitationCard.findUnique({
         where: {
-            id: parseInt(id)
+            id: id
         },
     }
 );

@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Attendance Management System",
-  description: "Attendance Management System",
+  title: "Graduation Invitation System",
+  description: "Graduation Invitation System",
 };
 
 export default function RootLayout({

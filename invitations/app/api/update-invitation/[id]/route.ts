@@ -6,7 +6,7 @@ export async function PUT(request: NextRequest, {params: params}: {params: Promi
     const {fullName, email, phoneNumber, origanization, position, idNumber} = await request.json();    
     const invitation = await prisma.invitationCard.update({
         where: {
-            id: parseInt(id)
+            id: id
         },
         data: {
             fullName: fullName,

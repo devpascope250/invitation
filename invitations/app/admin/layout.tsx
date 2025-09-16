@@ -3,8 +3,8 @@ import "../globals.css";
 import Dashboard from "@/components/Dashboard";
 import { ReactQueryProvider } from "@/lib/react-query";
 export const metadata: Metadata = {
-  title: "Attendace | Admin",
-  description: "Attendances and leave management",
+  title: "Graduation Invitation | Admin",
+  description: "Graduation Invitation System",
 };
 
 export default function RootLayout({

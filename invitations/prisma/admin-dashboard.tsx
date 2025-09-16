@@ -17,7 +17,7 @@ export function AdminDashboard() {
     ["invitations"],
     "/admin/invitations"
   );
-  const [loadingButton, setLoadingButton] = React.useState<number | null>(null);
+  const [loadingButton, setLoadingButton] = React.useState<string | null>(null);
   const { mutateAsync: generateInvitation, isPending: isGeneratingInvitation } =
     useApiPost(["generate-invitation"], "/admin/generate-invitation");
   // generate all invitations
@@ -92,6 +92,7 @@ export function AdminDashboard() {
               setLoadingButton(row.id);
               await generateInvitation({id: row.id});
               queryClient.invalidateQueries({queryKey: ["invitations"]});
+              queryClient.invalidateQueries({queryKey: ["stats"]});
               setLoadingButton(null);
             }
           }}
@@ -175,6 +176,7 @@ export function AdminDashboard() {
           onClick={async () => {
             await generateAllInvitations({});
             queryClient.invalidateQueries({ queryKey: ["invitations"] });
+            queryClient.invalidateQueries({ queryKey: ["stats"] });
           }}
           size={"sm"}
           variant={"outline"}

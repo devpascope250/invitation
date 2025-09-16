@@ -7,7 +7,7 @@ export async function PUT(request: NextRequest, {params: params}: {params: Promi
     // check if exist
     const existinvitation = await prisma.invitationCard.findUnique({
         where: {
-            id: parseInt(id)
+            id: id
         }
     });
     if (!existinvitation) {
@@ -16,7 +16,7 @@ export async function PUT(request: NextRequest, {params: params}: {params: Promi
 }
     const invitation = await prisma.invitationCard.update({
         where: {
-            id: parseInt(id)
+            id: id
         },
         data: {
             approval: approval
