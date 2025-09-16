@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         // Render the EJS template with unique data
         const templatePath = path.join(process.cwd(), 'views', 'emails', 'guest-invitaion-template.ejs');
         const html = await ejs.renderFile(templatePath, {
-          companyName: item.origanization,
+          companyName: item.origanization ?? item.fullName,
           rsvpLink: process.env.RSVP_LINK+''+item.id,
         });
 

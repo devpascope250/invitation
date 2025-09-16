@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   const templatePath = path.join(process.cwd(), 'views', 'emails', 'guest-invitaion-template.ejs');
   const data = {
     rsvpLink: process.env.RSVP_LINK+''+getEmail.id,
-    companyName: getEmail.origanization,
+    companyName: getEmail.origanization ?? getEmail.fullName,
 
   }
   const html = await ejs.renderFile(templatePath, data);

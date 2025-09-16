@@ -9,6 +9,7 @@ import React, { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { InvitationCard, InvitationStatus } from "@prisma/client";
+import { render } from "ejs";
 export function AdminDashboard() {
   const { useApiQuery, api, useApiPost, queryClient } = useApi();
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -62,15 +63,18 @@ export function AdminDashboard() {
       header: "Name",
       accessor: "fullName",
       sortable: true,
+      render: (value: string) => value || "-",
     },
     {
       header: "Position",
       accessor: "position",
       sortable: true,
+      render: (value: string) => value || "-"
     },
     {
       header: "Email",
       accessor: "email",
+      render: (value: string) => value || "-",
     },
     {
       header: "Phone",
