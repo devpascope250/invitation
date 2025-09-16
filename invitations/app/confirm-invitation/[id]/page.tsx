@@ -122,7 +122,7 @@ export default function ConfirmInvitationPage() {
             Invitation Approval
           </h1>
           <p className="text-gray-600">
-            Review and approve invitation #{invitationId}
+            Review and approve invitation 
           </p>
         </div>
 
