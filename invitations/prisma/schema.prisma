@@ -1,0 +1,64 @@
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Graduation_student {
+  id           Int       @id
+  regNumber    String?
+  collegeName  String?
+  firstName    String?
+  lastName     String?
+  degree       String?
+  status       String?
+  scannedNumber String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("graduation_student")
+}
+
+model InvitationCard {
+  id           Int       @id @default(autoincrement())
+  regNumber    String?
+  Image        String?
+  secretKey    String?
+  fullName     String?
+  position     String?
+  email        String?
+  idNumber     String?
+  phoneNumber   String?
+  origanization   String?
+  status       InvitationStatus @default(IDLE)
+  approval     ApprovalStatus @default(IDLE)
+  type         Type?
+  dateGenerated  DateTime @default(now())
+  dateScanned  DateTime?
+  entranceUserId Int?
+  @@map("invitation_card")
+}
+
+enum Type {
+  STUDENT
+  PARENT
+  GUEST
+}
+
+enum InvitationStatus {
+  IDLE
+  GENERATED
+}
+
+enum ApprovalStatus {
+  IDLE
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+
