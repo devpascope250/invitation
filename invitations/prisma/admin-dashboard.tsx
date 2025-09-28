@@ -9,6 +9,8 @@ import React, { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { InvitationCard, InvitationStatus } from "@prisma/client";
+import Modal from "@/components/Modal";
+import {  } from "qrcode";
 export function AdminDashboard() {
   const { useApiQuery, api, useApiPost, queryClient } = useApi();
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -73,6 +75,10 @@ export function AdminDashboard() {
     {
       header: "Email",
       accessor: "email",
+      render: (value: string) => value || "-",
+    }, {
+      header: "Status",
+      accessor: "status",
       render: (value: string) => value || "-",
     },
     {
@@ -255,6 +261,12 @@ export function AdminDashboard() {
           data={invitations}
         />
       </Card>
+
+      <Modal isOpen={true} onClose={() => {}} >
+        <div className="w-full">
+          
+        </div>
+      </Modal>
     </>
   );
 }

@@ -52,6 +52,7 @@ enum Type {
 enum InvitationStatus {
   IDLE
   GENERATED
+  SCANNED
 }
 
 enum ApprovalStatus {

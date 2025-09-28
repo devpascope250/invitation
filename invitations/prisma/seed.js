@@ -2,7 +2,6 @@
 // prisma/seed.js
 const { PrismaClient } = require("@prisma/client");
 const fs = require("fs");
-
 const prisma = new PrismaClient();
 
 async function main() {
@@ -30,6 +29,10 @@ async function main() {
   const invitations = data.invitations;
   invitations.forEach((invitation) => {
     invitation.dateGenerated = new Date(invitation.dateGenerated).toISOString();
+    invitation.id = invitation.id+'7440k';
+    invitation.status = 'IDLE';
+    invitation.approval = 'IDLE';
+    invitation.type = 'GUEST';
   })
 
   // Insert Invitations
