@@ -261,12 +261,6 @@ export function AdminDashboard() {
           data={invitations}
         />
       </Card>
-
-      <Modal isOpen={true} onClose={() => {}} >
-        <div className="w-full">
-          
-        </div>
-      </Modal>
     </>
   );
 }
