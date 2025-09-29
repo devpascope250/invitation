@@ -14,9 +14,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, Save } from "lucide-react";
+import { CheckCircle, XCircle, Save, Download } from "lucide-react";
 import { useApi } from "@/lib/hooks/api-hooks";
-import { InvitationCard } from "@prisma/client";
+import { ApprovalStatus, InvitationCard } from "@prisma/client";
 import { useFormik } from "formik";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ import { toast } from "sonner";
 const invitationStatusOptions = [
   { value: "IDLE", label: "Idle" },
   { value: "GENERATED", label: "Generated" },
+  { value: "SCANNED", label: "Scanned" },
 ];
 
 const approvalStatusOptions = [
@@ -39,6 +40,7 @@ export default function ConfirmInvitationPage() {
   const router = useRouter();
   const [saveMessage, setSaveMessage] = useState("");
   const [saveError, setSaveError] = useState("");
+  const [loadinButton, setLoadingButton] = useState<string>("");
   const invitationId = params.id as string;
 
   // Get invitation ID from URL
@@ -69,7 +71,7 @@ export default function ConfirmInvitationPage() {
       idNumber: invitation?.idNumber || "",
     },
     onSubmit: async (values) => {
-      console.log(values);
+      setLoadingButton("UPDATE");
       await updateInvitation(values)
         .then((response) => {
           setSaveError("");
@@ -78,6 +80,9 @@ export default function ConfirmInvitationPage() {
         .catch((error) => {
           setSaveMessage("");
           setSaveError("An error occurred while saving changes.");
+        })
+        .finally(() => {
+          setLoadingButton("");
         });
     },
   });
@@ -121,9 +126,7 @@ export default function ConfirmInvitationPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Invitation Approval
           </h1>
-          <p className="text-gray-600">
-            Review and approve invitation 
-          </p>
+          <p className="text-gray-600">Review and approve invitation</p>
         </div>
 
         <Card className="w-full mb-6">
@@ -244,64 +247,79 @@ export default function ConfirmInvitationPage() {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t">
-                <Button
-                  type="submit"
-                  disabled={updatingInvitation}
-                  className="flex-1"
-                >
-                  {updatingInvitation ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="mr-2 h-4 w-4" />
-                      Save Changes
-                    </>
-                  )}
-                </Button>
+                {invitation.approval !== "APPROVED" && (
+                  <>
+                    <Button
+                      type="submit"
+                      disabled={updatingInvitation}
+                      className="flex-1"
+                    >
+                      {updatingInvitation && loadinButton === "UPDATE" ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="mr-2 h-4 w-4" />
+                          Save Changes
+                        </>
+                      )}
+                    </Button>
 
-                <Button
-                  type="button"
-                  variant="default"
-                  onClick={async () => {
-                    await approveInvitation({ approval: "APPROVED" }).then(
-                      () => {
-                        setSaveMessage("Invitation approved successfully");
-                        toast.success("Invitation approved successfully", {
-                          style: {
-                            background: "green",
-                            color: "white",
-                          },
-                        });
-                        queryClient.invalidateQueries({
-                          queryKey: ["my-invitation"],
-                        });
+                    <Button
+                      type="button"
+                      variant="default"
+                      onClick={async () => {
+                        setLoadingButton("APPROVED");
+                        await approveInvitation({ approval: "APPROVED" }).then(
+                          () => {
+                            setSaveMessage("Invitation approved successfully");
+                            toast.success("Invitation approved successfully", {
+                              style: {
+                                background: "green",
+                                color: "white",
+                              },
+                            });
+                            queryClient.invalidateQueries({
+                              queryKey: ["my-invitation"],
+                            });
+                          }
+                        );
+                        setLoadingButton("");
+                      }}
+                      disabled={
+                        approvingInvitation ||
+                        invitation.approval === ("APPROVED" as ApprovalStatus)
                       }
-                    );
-                  }}
-                  disabled={
-                    approvingInvitation || invitation.approval === "APPROVED"
-                  }
-                  className="flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {approvingInvitation ? (
-                    <>
-                      <LoadingSpinner size="sm" />
-                      Approving ...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="mr-2 h-4 w-4" />
-                      Approve Invitation
-                    </>
-                  )}
-                </Button>
+                      className="flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {approvingInvitation && loadinButton === "APPROVED" ? (
+                        <>
+                          <LoadingSpinner size="sm" />
+                          Approving ...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="mr-2 h-4 w-4" />
+                          Approve Invitation
+                        </>
+                      )}
+                    </Button>
+                  </>
+                )}
+                {invitation.approval== "APPROVED" && (
+                  <Button variant="secondary" onClick={() => router.push(`/confirm-invitation/${invitation.id}/download`)} className="flex-1 cursor-pointer">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Invitation
+                  </Button>
+                )}
+
                 <Button
                   type="button"
                   variant="destructive"
                   onClick={async () => {
+                    setLoadingButton("REEJECTED");
                     await approveInvitation({ approval: "REJECTED" }).then(
                       () => {
                         setSaveMessage("Invitation rejected successfully");
@@ -316,13 +334,14 @@ export default function ConfirmInvitationPage() {
                         });
                       }
                     );
+                    setLoadingButton("");
                   }}
                   disabled={
                     approvingInvitation || invitation.approval === "REJECTED"
                   }
                   className="flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {approvingInvitation ? (
+                  {approvingInvitation && loadinButton === "REJECTED" ? (
                     <>
                       <LoadingSpinner size="sm" />
                       Rejecting Invitation
