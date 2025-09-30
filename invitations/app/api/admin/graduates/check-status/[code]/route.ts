@@ -8,7 +8,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
 
   // const regNumber = code.split(":")[1];
 
-  const graduate = await prisma.invitationCard.findUnique({
+  const graduate = await prisma.invitationCard.findFirst({
     where: {
       id: invitationId,
     },
