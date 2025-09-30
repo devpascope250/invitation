@@ -8,11 +8,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
 
   // const regNumber = code.split(":")[1];
 
-  const graduate = await prisma.invitationCard.findFirst({
-    where: {
-      id: invitationId,
-    },
-  });
+  // const graduate = await prisma.invitationCard.findFirst({
+  //   where: {
+  //     id: invitationId,
+  //   },
+  // });
   return NextResponse.json({ message: "Graduate found"});
 
 //   if (!graduate) {
