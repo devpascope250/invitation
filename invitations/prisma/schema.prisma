@@ -20,7 +20,7 @@ model Graduation_student {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  @@map("graduation_student")
+  @@map("graduationstudent")
 }
 
 model InvitationCard {
@@ -40,7 +40,7 @@ model InvitationCard {
   dateGenerated  DateTime @default(now())
   dateScanned  DateTime?
   entranceUserId Int?
-  @@map("invitation_card")
+  @@map("invitationcard")
 }
 
 enum Type {

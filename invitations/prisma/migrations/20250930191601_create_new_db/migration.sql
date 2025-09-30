@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE `graduation_student` (
+CREATE TABLE `graduationstudent` (
     `id` INTEGER NOT NULL,
     `regNumber` VARCHAR(191) NULL,
     `collegeName` VARCHAR(191) NULL,
@@ -15,7 +15,7 @@ CREATE TABLE `graduation_student` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `invitation_card` (
+CREATE TABLE `invitationcard` (
     `id` VARCHAR(191) NOT NULL,
     `regNumber` VARCHAR(191) NULL,
     `Image` VARCHAR(191) NULL,
@@ -26,7 +26,7 @@ CREATE TABLE `invitation_card` (
     `idNumber` VARCHAR(191) NULL,
     `phoneNumber` VARCHAR(191) NULL,
     `origanization` VARCHAR(191) NULL,
-    `status` ENUM('IDLE', 'GENERATED') NOT NULL DEFAULT 'IDLE',
+    `status` ENUM('IDLE', 'GENERATED', 'SCANNED') NOT NULL DEFAULT 'IDLE',
     `approval` ENUM('IDLE', 'PENDING', 'APPROVED', 'REJECTED') NOT NULL DEFAULT 'IDLE',
     `type` ENUM('STUDENT', 'PARENT', 'GUEST') NULL,
     `dateGenerated` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
