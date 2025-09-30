@@ -2288,6 +2288,658 @@
 
 
 
+// "use client"
+
+// import { useState, useRef, useEffect } from "react"
+// import { Button } from "@/components/ui/button"
+// import { Card, CardContent } from "@/components/ui/card"
+// import { Input } from "@/components/ui/input"
+// import { Label } from "@/components/ui/label"
+// import { Badge } from "@/components/ui/badge"
+// import { QrCode, Camera, CameraOff, RefreshCw, Scan, Search, X, CheckCircle, AlertCircle } from "lucide-react"
+
+// // Import jsQR for real QR code detection
+// import jsQR from "jsqr"
+
+// interface Graduate {
+//   id: number
+//   registrationNumber: string
+//   identificationNumber: string
+//   fullName: string
+//   college: string
+//   degree: string
+//   graduationDate: string
+//   email: string
+// }
+
+// // Mock data for demonstration
+// const mockGraduates = [
+//   {
+//     id: 1,
+//     registrationNumber: "REG123456",
+//     identificationNumber: "ID789012",
+//     fullName: "John Doe",
+//     college: "College of Engineering",
+//     degree: "Bachelor of Science in Computer Science",
+//     graduationDate: "2023-05-15",
+//     email: "john.doe@example.com",
+//   },
+//   {
+//     id: 2,
+//     registrationNumber: "REG654321",
+//     identificationNumber: "ID098765",
+//     fullName: "Sarah Wilson",
+//     college: "College of Business",
+//     degree: "Bachelor of Business Administration",
+//     graduationDate: "2023-05-15",
+//     email: "sarah.wilson@example.com",
+//   },
+//   {
+//     id: 3,
+//     registrationNumber: "REG111222",
+//     identificationNumber: "ID333444",
+//     fullName: "Michael Brown",
+//     college: "College of Medicine",
+//     degree: "Doctor of Medicine",
+//     graduationDate: "2023-05-15",
+//     email: "michael.brown@example.com",
+//   }
+// ]
+
+// export default function QRCodeGraduationScanner() {
+//   const [isScanning, setIsScanning] = useState(false)
+//   const [hasCamera, setHasCamera] = useState(false)
+//   const [cameraError, setCameraError] = useState("")
+//   const [scannedData, setScannedData] = useState("")
+//   const [currentGraduate, setCurrentGraduate] = useState<Graduate | null>(null)
+//   const [error, setError] = useState("")
+//   const [isLoading, setIsLoading] = useState(false)
+//   const [showManualEntry, setShowManualEntry] = useState(false)
+//   const [scanCount, setScanCount] = useState(0)
+//   const [isDetecting, setIsDetecting] = useState(false)
+//   const [lastDetectedCode, setLastDetectedCode] = useState<string>("")
+  
+//   const videoRef = useRef<HTMLVideoElement>(null)
+//   const canvasRef = useRef<HTMLCanvasElement>(null)
+//   const streamRef = useRef<MediaStream | null>(null)
+//   const animationFrameRef = useRef<number>(0)
+//   const lastScanTimeRef = useRef<number>(0)
+//   const scanLineRef = useRef<HTMLDivElement>(null)
+
+//   // Check for camera availability
+//   useEffect(() => {
+//     const checkCamera = async () => {
+//       try {
+//         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+//           const devices = await navigator.mediaDevices.enumerateDevices()
+//           const videoDevices = devices.filter(device => device.kind === 'videoinput')
+//           setHasCamera(videoDevices.length > 0)
+//         }
+//       } catch (err) {
+//         console.error("Error checking camera:", err)
+//         setHasCamera(false)
+//       }
+//     }
+    
+//     checkCamera()
+//   }, [])
+
+//   // Start camera for scanning
+//   const startCamera = async () => {
+//     try {
+//       setCameraError("")
+//       setIsScanning(true)
+//       setIsDetecting(true)
+      
+//       if (streamRef.current) {
+//         stopCamera()
+//       }
+
+//       const constraints = {
+//         video: { 
+//           facingMode: "environment",
+//           width: { ideal: 1280 },
+//           height: { ideal: 720 }
+//         } 
+//       }
+
+//       const stream = await navigator.mediaDevices.getUserMedia(constraints)
+      
+//       if (videoRef.current) {
+//         videoRef.current.srcObject = stream
+//         videoRef.current.onloadedmetadata = () => {
+//           videoRef.current?.play().catch(err => {
+//             console.error("Error playing video:", err)
+//             setCameraError("Cannot play video stream")
+//           })
+//         }
+//         streamRef.current = stream
+        
+//         // Start continuous detection after video is ready
+//         videoRef.current.addEventListener('playing', () => {
+//           startContinuousDetection()
+//         })
+//       }
+//     } catch (err: any) {
+//       console.error("Error accessing camera:", err)
+//       setIsScanning(false)
+//       setIsDetecting(false)
+      
+//       if (err.name === 'NotAllowedError') {
+//         setCameraError("Camera access denied")
+//       } else if (err.name === 'NotFoundError') {
+//         setCameraError("No camera found")
+//       } else {
+//         setCameraError("Unable to access camera")
+//       }
+//     }
+//   }
+
+//   // Real QR code detection using jsQR
+//   const detectQRCode = (): string | null => {
+//     if (!videoRef.current || !canvasRef.current || !isDetecting) return null
+
+//     const video = videoRef.current
+//     const canvas = canvasRef.current
+//     const context = canvas.getContext('2d')
+    
+//     if (!context || video.readyState !== video.HAVE_ENOUGH_DATA) return null
+
+//     // Set canvas dimensions to match video
+//     canvas.width = video.videoWidth
+//     canvas.height = video.videoHeight
+    
+//     // Draw current video frame to canvas
+//     context.drawImage(video, 0, 0, canvas.width, canvas.height)
+    
+//     // Get image data for processing
+//     const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+    
+//     // Use jsQR for actual QR code detection
+//     const code = jsQR(imageData.data, imageData.width, imageData.height, {
+//       inversionAttempts: "dontInvert",
+//     })
+    
+//     if (code) {
+//       return code.data
+//     }
+    
+//     return null
+//   }
+
+//   // Continuous QR code detection
+//   const startContinuousDetection = () => {
+//     const detectFrame = () => {
+//       if (!isDetecting || !isScanning) return
+      
+//       try {
+//         const qrData = detectQRCode()
+        
+//         if (qrData && qrData !== lastDetectedCode) {
+//           // New QR code detected
+//           setLastDetectedCode(qrData)
+//           handleQRCodeDetected(qrData)
+//         }
+//       } catch (error) {
+//         console.error("Error in QR detection:", error)
+//       }
+      
+//       animationFrameRef.current = requestAnimationFrame(detectFrame)
+//     }
+    
+//     animationFrameRef.current = requestAnimationFrame(detectFrame)
+//   }
+
+//   // Handle detected QR code
+//   const handleQRCodeDetected = (data: string) => {
+//     const now = Date.now()
+//     // Prevent multiple scans of the same code within 3 seconds
+//     if (now - lastScanTimeRef.current < 3000) return
+    
+//     lastScanTimeRef.current = now
+//     setScannedData(data)
+//     setIsLoading(true)
+//     setError("")
+    
+//     // Process the QR code data
+//     setTimeout(() => {
+//       try {
+//         // Try to parse the QR code data
+//         if (data.includes(':')) {
+//           const [registrationNumber, identificationNumber] = data.split(":")
+//           verifyFromQR(registrationNumber, identificationNumber)
+//         } else {
+//           // If no colon, try to extract registration and ID numbers
+//           const regMatch = data.match(/REG(\w+)/)
+//           const idMatch = data.match(/ID(\w+)/)
+          
+//           if (regMatch && idMatch) {
+//             verifyFromQR(regMatch[0], idMatch[0])
+//           } else {
+//             setError("Invalid QR code format")
+//             setIsLoading(false)
+//           }
+//         }
+//       } catch (error) {
+//         setError("Error processing QR code")
+//         setIsLoading(false)
+//       }
+//     }, 500)
+//   }
+
+//   // Stop camera
+//   const stopCamera = () => {
+//     setIsDetecting(false)
+//     setLastDetectedCode("")
+//     if (animationFrameRef.current) {
+//       cancelAnimationFrame(animationFrameRef.current)
+//     }
+//     if (streamRef.current) {
+//       streamRef.current.getTracks().forEach(track => {
+//         track.stop()
+//       })
+//       streamRef.current = null
+//     }
+//     if (videoRef.current) {
+//       videoRef.current.srcObject = null
+//     }
+//     setIsScanning(false)
+//   }
+
+//   // Verify graduate from QR data
+//   const verifyFromQR = (registrationNumber: string, identificationNumber: string) => {
+//     const foundGraduate = mockGraduates.find(g => 
+//       g.registrationNumber === registrationNumber && 
+//       g.identificationNumber === identificationNumber
+//     )
+    
+//     if (foundGraduate) {
+//       setCurrentGraduate(foundGraduate)
+//       setError("")
+//       setScanCount(prev => prev + 1)
+//       // Auto-continue scanning after 3 seconds
+//       setTimeout(() => {
+//         continueScanning()
+//       }, 3000)
+//     } else {
+//       setError("No graduate found with this QR code")
+//       setCurrentGraduate(null)
+//     }
+//     setIsLoading(false)
+//   }
+
+//   // Manual verification
+//   const verifyManually = (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault()
+//     setIsLoading(true)
+    
+//     if (!scannedData) {
+//       setError("Please enter data to verify")
+//       setIsLoading(false)
+//       return
+//     }
+    
+//     setTimeout(() => {
+//       try {
+//         if (scannedData.includes(':')) {
+//           const [regNumber, idNumber] = scannedData.split(":")
+//           verifyFromQR(regNumber, idNumber)
+//         } else {
+//           // Try to find by registration number or ID number
+//           const foundGraduate = mockGraduates.find(g => 
+//             g.registrationNumber === scannedData || 
+//             g.identificationNumber === scannedData
+//           )
+          
+//           if (foundGraduate) {
+//             setCurrentGraduate(foundGraduate)
+//             setError("")
+//             setScanCount(prev => prev + 1)
+//             setTimeout(() => {
+//               continueScanning()
+//             }, 3000)
+//           } else {
+//             setError("No graduate found with this data")
+//             setCurrentGraduate(null)
+//           }
+//         }
+//         setShowManualEntry(false)
+//       } catch (error) {
+//         setError("Error processing data")
+//       }
+//       setIsLoading(false)
+//     }, 800)
+//   }
+
+//   // Continue scanning
+//   const continueScanning = () => {
+//     setCurrentGraduate(null)
+//     setScannedData("")
+//     setError("")
+//     setLastDetectedCode("")
+//   }
+
+//   // Simulate QR code scanning (for testing without camera)
+//   const simulateQRScan = () => {
+//     const randomIndex = Math.floor(Math.random() * mockGraduates.length)
+//     const mockGraduate = mockGraduates[randomIndex]
+//     const mockQRData = `${mockGraduate.registrationNumber}:${mockGraduate.identificationNumber}`
+    
+//     handleQRCodeDetected(mockQRData)
+//   }
+
+//   // Clean up camera on unmount
+//   useEffect(() => {
+//     return () => {
+//       stopCamera()
+//     }
+//   }, [])
+
+//   // Scanning animation effect
+//   useEffect(() => {
+//     if (!isScanning || !scanLineRef.current) return
+
+//     const scanLine = scanLineRef.current
+//     let position = 0
+//     let direction = 1
+//     let animationFrameId: number
+    
+//     const animateScanLine = () => {
+//       if (!isScanning) return
+      
+//       position += direction * 2
+      
+//       if (position >= 100) {
+//         position = 100
+//         direction = -1
+//       } else if (position <= 0) {
+//         position = 0
+//         direction = 1
+//       }
+      
+//       scanLine.style.top = `${position}%`
+//       animationFrameId = requestAnimationFrame(animateScanLine)
+//     }
+    
+//     animateScanLine()
+    
+//     return () => {
+//       if (animationFrameId) {
+//         cancelAnimationFrame(animationFrameId)
+//       }
+//     }
+//   }, [isScanning])
+
+//   return (
+//     <div className="min-h-screen bg-gray-50 py-4 px-4">
+//       <div className="max-w-md mx-auto">
+//         {/* Header */}
+//         <div className="text-center mb-4">
+//           <div className="flex justify-center items-center mb-2">
+//             <QrCode className="h-8 w-8 text-blue-600" />
+//           </div>
+//           <h1 className="text-xl font-bold text-gray-900">Graduation QR Scanner</h1>
+//           <p className="text-gray-600 text-sm">Scan graduate QR codes for verification</p>
+//           <div className="flex justify-center items-center gap-4 mt-2">
+//             <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+//               Scanned: {scanCount}
+//             </Badge>
+//             {currentGraduate && (
+//               <Badge className="bg-green-100 text-green-800">
+//                 Verified
+//               </Badge>
+//             )}
+//             {isDetecting && (
+//               <Badge className="bg-orange-100 text-orange-800">
+//                 Detecting...
+//               </Badge>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* Scanner Section */}
+//         <Card className="mb-4">
+//           <CardContent className="p-4 space-y-4">
+//             {/* Scanner View */}
+//             <div className="aspect-square bg-black rounded-lg overflow-hidden relative border-2 border-blue-300">
+//               {isScanning ? (
+//                 <>
+//                   <video
+//                     ref={videoRef}
+//                     autoPlay
+//                     playsInline
+//                     muted
+//                     className="w-full h-full object-cover"
+//                   />
+//                   <canvas ref={canvasRef} className="hidden" />
+                  
+//                   {/* Scanning overlay with animation */}
+//                   <div className="absolute inset-0 flex items-center justify-center">
+//                     <div className="w-48 h-48 border-2 border-green-400 rounded-lg relative">
+//                       <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-green-400"></div>
+//                       <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-green-400"></div>
+//                       <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-green-400"></div>
+//                       <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-green-400"></div>
+                      
+//                       {/* Animated scan line */}
+//                       <div 
+//                         ref={scanLineRef}
+//                         className="absolute left-0 right-0 h-1 bg-green-400 opacity-80 transition-all duration-75"
+//                         style={{ top: '0%' }}
+//                       ></div>
+//                     </div>
+//                   </div>
+                  
+//                   {/* Detection indicators */}
+//                   {isDetecting && (
+//                     <>
+//                       <div className="absolute top-2 right-2 flex items-center">
+//                         <div className="w-2 h-2 bg-green-500 rounded-full animate-ping mr-1"></div>
+//                         <span className="text-xs text-white bg-black bg-opacity-50 px-1 rounded">Live</span>
+//                       </div>
+//                       {isLoading && (
+//                         <div className="absolute top-2 left-2">
+//                           <span className="text-xs text-white bg-blue-500 bg-opacity-50 px-1 rounded">Processing...</span>
+//                         </div>
+//                       )}
+//                     </>
+//                   )}
+//                 </>
+//               ) : (
+//                 <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 text-white">
+//                   <QrCode className="h-16 w-16 mb-2 opacity-50" />
+//                   <p className="text-sm text-center px-4">
+//                     {hasCamera ? "Camera ready" : "No camera available"}
+//                   </p>
+//                   {!hasCamera && (
+//                     <p className="text-xs text-center px-4 mt-2 text-orange-300">
+//                       Use manual entry or test scan
+//                     </p>
+//                   )}
+//                 </div>
+//               )}
+//             </div>
+
+//             {cameraError && (
+//               <div className="p-2 bg-red-50 text-red-700 rounded-md text-xs text-center">
+//                 <AlertCircle className="h-3 w-3 inline mr-1" />
+//                 {cameraError}
+//               </div>
+//             )}
+
+//             {/* Scanner Controls */}
+//             <div className="grid grid-cols-2 gap-2">
+//               <Button 
+//                 onClick={isScanning ? stopCamera : startCamera}
+//                 disabled={!hasCamera}
+//                 variant={isScanning ? "outline" : "default"}
+//                 size="sm"
+//                 className="w-full"
+//               >
+//                 {isScanning ? (
+//                   <>
+//                     <CameraOff className="mr-1 h-3 w-3" />
+//                     Stop Camera
+//                   </>
+//                 ) : (
+//                   <>
+//                     <Camera className="mr-1 h-3 w-3" />
+//                     Start Camera
+//                   </>
+//                 )}
+//               </Button>
+              
+//               <Button 
+//                 onClick={simulateQRScan}
+//                 disabled={isLoading}
+//                 variant="secondary"
+//                 size="sm"
+//                 className="w-full"
+//               >
+//                 {isLoading ? (
+//                   <>
+//                     <RefreshCw className="mr-1 h-3 w-3 animate-spin" />
+//                     Scanning
+//                   </>
+//                 ) : (
+//                   <>
+//                     <Scan className="mr-1 h-3 w-3" />
+//                     Test Scan
+//                   </>
+//                 )}
+//               </Button>
+//             </div>
+
+//             {/* Manual Entry */}
+//             {showManualEntry ? (
+//               <div className="p-3 border rounded-lg bg-gray-50">
+//                 <form onSubmit={verifyManually} className="space-y-2">
+//                   <div className="flex items-center justify-between">
+//                     <Label htmlFor="scannedData" className="text-xs">Manual Entry</Label>
+//                     <Button
+//                       type="button"
+//                       variant="ghost"
+//                       size="sm"
+//                       onClick={() => setShowManualEntry(false)}
+//                     >
+//                       <X className="h-3 w-3" />
+//                     </Button>
+//                   </div>
+//                   <Input
+//                     id="scannedData"
+//                     placeholder="REG123456:ID789012 or just REG123456"
+//                     value={scannedData}
+//                     onChange={(e) => setScannedData(e.target.value)}
+//                     className="text-sm h-8"
+//                     required
+//                     autoFocus
+//                   />
+//                   <div className="flex gap-2">
+//                     <Button type="submit" size="sm" className="flex-1" disabled={isLoading}>
+//                       {isLoading ? <RefreshCw className="h-3 w-3 animate-spin" /> : "Verify"}
+//                     </Button>
+//                     <Button type="button" variant="outline" size="sm" onClick={() => setShowManualEntry(false)}>
+//                       Cancel
+//                     </Button>
+//                   </div>
+//                 </form>
+//               </div>
+//             ) : (
+//               <Button 
+//                 variant="outline" 
+//                 onClick={() => setShowManualEntry(true)}
+//                 size="sm"
+//                 className="w-full"
+//               >
+//                 <Search className="mr-1 h-3 w-3" />
+//                 Manual Entry
+//               </Button>
+//             )}
+
+//             {error && (
+//               <div className="p-2 bg-red-50 text-red-700 rounded-md text-xs text-center">
+//                 <AlertCircle className="h-3 w-3 inline mr-1" />
+//                 {error}
+//               </div>
+//             )}
+
+//             {scannedData && !currentGraduate && !error && (
+//               <div className="p-2 bg-blue-50 text-blue-700 rounded-md text-xs text-center">
+//                 Scanned: {scannedData}
+//               </div>
+//             )}
+//           </CardContent>
+//         </Card>
+
+//         {/* Current Scan Result */}
+//         {currentGraduate && (
+//           <Card className="border-green-200 bg-green-50 mb-4 animate-in fade-in duration-500">
+//             <CardContent className="p-4">
+//               <div className="flex items-center gap-2 mb-3">
+//                 <CheckCircle className="h-4 w-4 text-green-600" />
+//                 <span className="font-medium text-sm">Verified Graduate</span>
+//                 <Badge className="bg-green-100 text-green-800 ml-auto text-xs">
+//                   Success
+//                 </Badge>
+//               </div>
+              
+//               <div className="space-y-3 text-sm">
+//                 <div className="grid grid-cols-2 gap-2">
+//                   <div>
+//                     <span className="font-medium text-xs text-gray-600">Name:</span>
+//                     <p className="text-gray-800 font-medium">{currentGraduate.fullName}</p>
+//                   </div>
+//                   <div>
+//                     <span className="font-medium text-xs text-gray-600">Registration:</span>
+//                     <p className="text-gray-800">{currentGraduate.registrationNumber}</p>
+//                   </div>
+//                 </div>
+//                 <div className="grid grid-cols-2 gap-2">
+//                   <div>
+//                     <span className="font-medium text-xs text-gray-600">College:</span>
+//                     <p className="text-gray-800">{currentGraduate.college}</p>
+//                   </div>
+//                   <div>
+//                     <span className="font-medium text-xs text-gray-600">ID Number:</span>
+//                     <p className="text-gray-800">{currentGraduate.identificationNumber}</p>
+//                   </div>
+//                 </div>
+//                 <div>
+//                   <span className="font-medium text-xs text-gray-600">Degree:</span>
+//                   <p className="text-gray-800 text-xs">{currentGraduate.degree}</p>
+//                 </div>
+//                 <div>
+//                   <span className="font-medium text-xs text-gray-600">Email:</span>
+//                   <p className="text-gray-800 text-xs">{currentGraduate.email}</p>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 pt-3 border-t border-green-200">
+//                 <p className="text-xs text-green-700 text-center">
+//                   ✓ Successfully verified • Auto-continuing in 3 seconds
+//                 </p>
+//               </div>
+//             </CardContent>
+//           </Card>
+//         )}
+
+//         {/* Instructions */}
+//         <Card className="bg-blue-50 border-blue-200">
+//           <CardContent className="p-3">
+//             <div className="text-center text-sm text-blue-800">
+//               <p className="font-medium">How to use:</p>
+//               <p className="text-xs mt-1">1. Start camera → 2. Point at QR code → 3. Automatic detection</p>
+//               <p className="text-xs">Scanned: <strong>{scanCount}</strong> codes</p>
+//             </div>
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </div>
+//   )
+// }
+
+
+
 "use client"
 
 import { useState, useRef, useEffect } from "react"
@@ -2407,18 +3059,27 @@ export default function QRCodeGraduationScanner() {
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current?.play().catch(err => {
-            console.error("Error playing video:", err)
-            setCameraError("Cannot play video stream")
-          })
-        }
         streamRef.current = stream
         
-        // Start continuous detection after video is ready
-        videoRef.current.addEventListener('playing', () => {
-          startContinuousDetection()
-        })
+        // Wait for video to be ready
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play().then(() => {
+            console.log("Video started playing")
+            startContinuousDetection()
+          }).catch(err => {
+            console.error("Error playing video:", err)
+            setCameraError("Cannot play video stream: " + err.message)
+            setIsScanning(false)
+            setIsDetecting(false)
+          })
+        }
+
+        videoRef.current.onerror = () => {
+          console.error("Video error")
+          setCameraError("Video error occurred")
+          setIsScanning(false)
+          setIsDetecting(false)
+        }
       }
     } catch (err: any) {
       console.error("Error accessing camera:", err)
@@ -2426,11 +3087,13 @@ export default function QRCodeGraduationScanner() {
       setIsDetecting(false)
       
       if (err.name === 'NotAllowedError') {
-        setCameraError("Camera access denied")
+        setCameraError("Camera access denied. Please allow camera permissions.")
       } else if (err.name === 'NotFoundError') {
-        setCameraError("No camera found")
+        setCameraError("No camera found on this device")
+      } else if (err.name === 'NotSupportedError') {
+        setCameraError("Camera not supported in this browser")
       } else {
-        setCameraError("Unable to access camera")
+        setCameraError("Unable to access camera: " + err.message)
       }
     }
   }
@@ -2443,25 +3106,32 @@ export default function QRCodeGraduationScanner() {
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
     
-    if (!context || video.readyState !== video.HAVE_ENOUGH_DATA) return null
+    if (!context || video.readyState !== video.HAVE_ENOUGH_DATA || video.videoWidth === 0) {
+      return null
+    }
 
-    // Set canvas dimensions to match video
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
-    
-    // Draw current video frame to canvas
-    context.drawImage(video, 0, 0, canvas.width, canvas.height)
-    
-    // Get image data for processing
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-    
-    // Use jsQR for actual QR code detection
-    const code = jsQR(imageData.data, imageData.width, imageData.height, {
-      inversionAttempts: "dontInvert",
-    })
-    
-    if (code) {
-      return code.data
+    try {
+      // Set canvas dimensions to match video
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+      
+      // Draw current video frame to canvas
+      context.drawImage(video, 0, 0, canvas.width, canvas.height)
+      
+      // Get image data for processing
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+      
+      // Use jsQR for actual QR code detection
+      const code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "dontInvert",
+      })
+      
+      if (code) {
+        console.log("QR Code detected:", code.data)
+        return code.data
+      }
+    } catch (error) {
+      console.error("Error in QR detection:", error)
     }
     
     return null
@@ -2469,6 +3139,8 @@ export default function QRCodeGraduationScanner() {
 
   // Continuous QR code detection
   const startContinuousDetection = () => {
+    if (!isDetecting || !isScanning) return
+
     const detectFrame = () => {
       if (!isDetecting || !isScanning) return
       
@@ -2481,7 +3153,7 @@ export default function QRCodeGraduationScanner() {
           handleQRCodeDetected(qrData)
         }
       } catch (error) {
-        console.error("Error in QR detection:", error)
+        console.error("Error in QR detection frame:", error)
       }
       
       animationFrameRef.current = requestAnimationFrame(detectFrame)
@@ -2494,12 +3166,16 @@ export default function QRCodeGraduationScanner() {
   const handleQRCodeDetected = (data: string) => {
     const now = Date.now()
     // Prevent multiple scans of the same code within 3 seconds
-    if (now - lastScanTimeRef.current < 3000) return
+    if (now - lastScanTimeRef.current < 3000) {
+      console.log("Skipping duplicate scan")
+      return
+    }
     
     lastScanTimeRef.current = now
     setScannedData(data)
     setIsLoading(true)
     setError("")
+    console.log("Processing QR data:", data)
     
     // Process the QR code data
     setTimeout(() => {
@@ -2507,7 +3183,7 @@ export default function QRCodeGraduationScanner() {
         // Try to parse the QR code data
         if (data.includes(':')) {
           const [registrationNumber, identificationNumber] = data.split(":")
-          verifyFromQR(registrationNumber, identificationNumber)
+          verifyFromQR(registrationNumber.trim(), identificationNumber.trim())
         } else {
           // If no colon, try to extract registration and ID numbers
           const regMatch = data.match(/REG(\w+)/)
@@ -2516,12 +3192,29 @@ export default function QRCodeGraduationScanner() {
           if (regMatch && idMatch) {
             verifyFromQR(regMatch[0], idMatch[0])
           } else {
-            setError("Invalid QR code format")
-            setIsLoading(false)
+            // Try direct match with registration or ID
+            const foundGraduate = mockGraduates.find(g => 
+              g.registrationNumber === data || 
+              g.identificationNumber === data
+            )
+            
+            if (foundGraduate) {
+              setCurrentGraduate(foundGraduate)
+              setError("")
+              setScanCount(prev => prev + 1)
+              setIsLoading(false)
+              setTimeout(() => {
+                continueScanning()
+              }, 3000)
+            } else {
+              setError("Invalid QR code format or no matching graduate found")
+              setIsLoading(false)
+            }
           }
         }
       } catch (error) {
-        setError("Error processing QR code")
+        console.error("Error processing QR code:", error)
+        setError("Error processing QR code data")
         setIsLoading(false)
       }
     }, 500)
@@ -2529,10 +3222,12 @@ export default function QRCodeGraduationScanner() {
 
   // Stop camera
   const stopCamera = () => {
+    console.log("Stopping camera...")
     setIsDetecting(false)
     setLastDetectedCode("")
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current)
+      animationFrameRef.current = 0
     }
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => {
@@ -2548,42 +3243,49 @@ export default function QRCodeGraduationScanner() {
 
   // Verify graduate from QR data
   const verifyFromQR = (registrationNumber: string, identificationNumber: string) => {
+    console.log("Verifying:", registrationNumber, identificationNumber)
     const foundGraduate = mockGraduates.find(g => 
       g.registrationNumber === registrationNumber && 
       g.identificationNumber === identificationNumber
     )
     
     if (foundGraduate) {
+      console.log("Graduate found:", foundGraduate.fullName)
       setCurrentGraduate(foundGraduate)
       setError("")
       setScanCount(prev => prev + 1)
+      setIsLoading(false)
       // Auto-continue scanning after 3 seconds
       setTimeout(() => {
         continueScanning()
       }, 3000)
     } else {
-      setError("No graduate found with this QR code")
+      console.log("No graduate found with these credentials")
+      setError("No graduate found with this QR code. Please check the data and try again.")
       setCurrentGraduate(null)
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   // Manual verification
   const verifyManually = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
+    setError("")
     
-    if (!scannedData) {
+    if (!scannedData.trim()) {
       setError("Please enter data to verify")
       setIsLoading(false)
       return
     }
     
+    console.log("Manual verification:", scannedData)
+    
     setTimeout(() => {
       try {
         if (scannedData.includes(':')) {
           const [regNumber, idNumber] = scannedData.split(":")
-          verifyFromQR(regNumber, idNumber)
+          verifyFromQR(regNumber.trim(), idNumber.trim())
         } else {
           // Try to find by registration number or ID number
           const foundGraduate = mockGraduates.find(g => 
@@ -2595,28 +3297,36 @@ export default function QRCodeGraduationScanner() {
             setCurrentGraduate(foundGraduate)
             setError("")
             setScanCount(prev => prev + 1)
+            setIsLoading(false)
             setTimeout(() => {
               continueScanning()
             }, 3000)
           } else {
             setError("No graduate found with this data")
             setCurrentGraduate(null)
+            setIsLoading(false)
           }
         }
         setShowManualEntry(false)
       } catch (error) {
+        console.error("Error in manual verification:", error)
         setError("Error processing data")
+        setIsLoading(false)
       }
-      setIsLoading(false)
     }, 800)
   }
 
   // Continue scanning
   const continueScanning = () => {
+    console.log("Continuing scanning...")
     setCurrentGraduate(null)
     setScannedData("")
     setError("")
     setLastDetectedCode("")
+    // Restart detection if camera was running
+    if (isScanning && videoRef.current && videoRef.current.readyState >= 2) {
+      startContinuousDetection()
+    }
   }
 
   // Simulate QR code scanning (for testing without camera)
@@ -2625,6 +3335,7 @@ export default function QRCodeGraduationScanner() {
     const mockGraduate = mockGraduates[randomIndex]
     const mockQRData = `${mockGraduate.registrationNumber}:${mockGraduate.identificationNumber}`
     
+    console.log("Simulating scan:", mockQRData)
     handleQRCodeDetected(mockQRData)
   }
 
