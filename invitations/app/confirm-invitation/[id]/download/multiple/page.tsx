@@ -124,7 +124,7 @@ useEffect(()=>{
           ],
           qrCodes: [
             {
-              data: `${invitation.id}:${invitation.idNumber}`,
+              data: `${invitation.id}:${invitation.regNumber}`,
               x: 230,
               y: 50,
               width: 115,
