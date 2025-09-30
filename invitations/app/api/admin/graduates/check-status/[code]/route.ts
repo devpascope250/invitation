@@ -5,14 +5,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
   const { code } =  await params;   
   // get id from code invitationId:regNumber
   const invitationId = code.split(":")[0];
-  return NextResponse.json({ message: "Graduate found"});
+
   // const regNumber = code.split(":")[1];
 
-//   const graduate = await prisma.invitationCard.findUnique({
-//     where: {
-//       id: invitationId,
-//     },
-//   });
+  const graduate = await prisma.invitationCard.findUnique({
+    where: {
+      id: invitationId,
+    },
+  });
+  return NextResponse.json({ message: "Graduate found"});
 
 //   if (!graduate) {
 //       return NextResponse.json({ message: "Invitation not found" }, { status: 404 });
