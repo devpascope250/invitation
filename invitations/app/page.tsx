@@ -268,7 +268,7 @@ export default function GraduationInvitationGenerator() {
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid grid-cols-2 mb-6">
                   <TabsTrigger value="verify">Verify with ID</TabsTrigger>
-                  <TabsTrigger value="search">Search Graduate</TabsTrigger>
+                  {/* <TabsTrigger value="search">Search Graduate</TabsTrigger> */}
                 </TabsList>
 
                 <TabsContent value="verify">
