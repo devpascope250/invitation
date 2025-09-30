@@ -50,6 +50,7 @@
 // }
 
 
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request, { params }: { params: Promise<{ code: string }> }) {
@@ -57,6 +58,16 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
   // get id from code invitationId:regNumber
   const invitationId = code.split(":")[0];
   const regNumber = code.split(":")[1];
+    const graduate = await prisma.invitationCard.findUnique({
+    where: {
+      id: invitationId,
+    },
+  });
+
+  if (!graduate) {
+      return NextResponse.json({ message: "Invitation not found" }, { status: 404 });
+  }
+
 
   return NextResponse.json({ message: "Graduate found", code: code }, { status: 200
   });
