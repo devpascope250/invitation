@@ -6,7 +6,7 @@
     <title>Graduation Ceremony Invitation</title>
     <style>
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f8f9fa;
@@ -20,7 +20,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         .header {
-            background: linear-gradient(135deg, #0d47a1, #1565c0, #1976d2);
+            background: linear-gradient(135deg, #8e24aa, #ab47bc, #ba68c8);
             color: white;
             padding: 30px 20px;
             text-align: center;
@@ -29,7 +29,7 @@
             padding: 40px 30px;
         }
         .footer {
-            background-color: #0d47a1;
+            background-color: #7b1fa2;
             color: #ecf0f1;
             padding: 25px 30px;
             text-align: center;
@@ -38,7 +38,7 @@
         .button {
             display: block;
             width: 250px;
-            background: linear-gradient(to right, #4CAF50, #2E7D32);
+            background: linear-gradient(to right, #ff9800, #f57c00);
             color: #ffffff;
             text-decoration: none;
             font-weight: 600;
@@ -47,24 +47,31 @@
             text-align: center;
             border-radius: 50px;
             margin: 30px auto;
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
         }
         .event-details {
-            background-color: #f0f7ff;
+            background-color: #f3e5f5;
             border-radius: 10px;
             padding: 25px;
             margin: 30px 0;
-            border-left: 5px solid #1976d2;
+            border-left: 5px solid #8e24aa;
         }
         .icon-row {
             display: flex;
             margin-bottom: 12px;
         }
         .icon {
-            color: #1976d2;
+            color: #8e24aa;
             margin-right: 15px;
             font-size: 18px;
             min-width: 24px;
+        }
+        .student-name {
+            font-size: 24px;
+            color: #7b1fa2;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
         }
     </style>
 </head>
@@ -73,7 +80,7 @@
         <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse; max-width: 600px;">
             <!-- Header -->
             <tr>
-                <td align="center" style="padding: 30px 20px; background: linear-gradient(135deg, #0d47a1, #1565c0, #1976d2); text-align: center; color: #ffffff;">
+                <td align="center" style="padding: 30px 20px; background: linear-gradient(135deg, #8e24aa, #ab47bc, #ba68c8); text-align: center; color: #ffffff;">
                     <div style="font-size: 48px; margin: 15px 0; color: #ffd700;">
                         <svg width="70" height="70" viewBox="0 0 70 70" style="display: block; margin: 0 auto;">
                             <path d="M56.5,25.5L35,15L13.5,25.5L35,36L56.5,25.5z" fill="#ffd700" stroke="#ccac00" stroke-width="0.5"/>
@@ -87,34 +94,38 @@
                     <a href="#" style="font-size: 32px; font-weight: bold; text-decoration: none; color: #ffffff; display: inline-block; margin-bottom: 15px;">
                         UNIVERSITY OF RWANDA
                     </a>
-                    <p style="margin: 0;">Department of Career Development & Corporate Relations</p>
+                    <p style="margin: 0;">Class of 2025 Graduation Celebration</p>
                 </td>
             </tr>
 
             <!-- Content -->
             <tr>
                 <td style="padding: 40px 30px; line-height: 1.6; background-color: #ffffff;">
-                    <h1 style="color: #0d47a1; font-size: 32px; font-weight: 700; margin-bottom: 20px; text-align: center;">
-                        Invitation to Our Graduation Ceremony
+                    <h1 style="color: #7b1fa2; font-size: 32px; font-weight: 700; margin-bottom: 20px; text-align: center;">
+                        You're Invited to Celebrate
                     </h1>
 
+                    <div class="student-name">
+                        <%= studentName %>
+                    </div>
                     <p style="color: #555555; font-size: 16px; margin-bottom: 25px;">
-                        Dear <%= companyName %> Team,
+                        With great pride and joy, we invite you to celebrate the academic achievements of 
+                        <strong><%= studentName %></strong> at the University of Rwanda's 2025 Graduation Ceremony.
                     </p>
 
                     <p style="color: #555555; font-size: 16px; margin-bottom: 25px;">
-                        We are pleased to invite your organization to our <span style="color: #0d47a1; font-weight: 600;">2025 Graduation Ceremony</span>.
-                        This event presents an excellent opportunity to connect with our newest cohort of talented graduates.
+                        This milestone represents years of dedication, hard work, and perseverance. 
+                        Join us as we honor this significant accomplishment and look forward to the bright future ahead.
                     </p>
 
-                    <div style="background-color: #f0f7ff; border-radius: 10px; padding: 25px; margin: 30px 0; border-left: 5px solid #1976d2;">
-                        <h2 style="color: #0d47a1; font-size: 20px; font-weight: 600; margin-bottom: 15px; text-align: center;">
-                            Event Details
+                    <div style="background-color: #f3e5f5; border-radius: 10px; padding: 25px; margin: 30px 0; border-left: 5px solid #8e24aa;">
+                        <h2 style="color: #7b1fa2; font-size: 20px; font-weight: 600; margin-bottom: 15px; text-align: center;">
+                            Ceremony Details
                         </h2>
 
                         <div style="display: flex; margin-bottom: 12px;">
-                            <div style="color: #1976d2; margin-right: 15px; font-size: 18px; min-width: 24px;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#1976d2">
+                            <div style="color: #8e24aa; margin-right: 15px; font-size: 18px; min-width: 24px;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#8e24aa">
                                     <path d="M19,4h-1V2h-2v2H8V2H6v2H5C3.9,4,3,4.9,3,6v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V6C21,4.9,20.1,4,19,4z M19,20H5V9h14V20z"/>
                                     <rect x="7" y="11" width="2" height="2"/>
                                     <rect x="11" y="11" width="2" height="2"/>
@@ -128,49 +139,71 @@
                         </div>
 
                         <div style="display: flex; margin-bottom: 12px;">
-                            <div style="color: #1976d2; margin-right: 15px; font-size: 18px; min-width: 24px;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#1976d2">
+                            <div style="color: #8e24aa; margin-right: 15px; font-size: 18px; min-width: 24px;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#8e24aa">
                                     <path d="M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10s10-4.5,10-10S17.5,2,12,2z M12,20c-4.4,0-8-3.6-8-8s3.6-8,8-8s8,3.6,8,8S16.4,20,12,20z"/>
                                     <polygon points="12.5,7 11,7 11,13 16.2,16.2 17,14.9 12.5,12.2"/>
                                 </svg>
                             </div>
                             <div>
-                                <strong>Time:</strong> 09:00 AM (Corporate registration begins at 08:30 AM)
+                                <strong>Time:</strong> 09:00 AM (Doors open at 08:00 AM)
                             </div>
                         </div>
 
                         <div style="display: flex; margin-bottom: 12px;">
-                            <div style="color: #1976d2; margin-right: 15px; font-size: 18px; min-width: 24px;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#1976d2">
+                            <div style="color: #8e24aa; margin-right: 15px; font-size: 18px; min-width: 24px;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#8e24aa">
                                     <path d="M12,2C8.1,2,5,5.1,5,9c0,5.3,7,13,7,13s7-7.8,7-13C19,5.1,15.9,2,12,2z M12,11.5c-1.4,0-2.5-1.1-2.5-2.5s1.1-2.5,2.5-2.5s2.5,1.1,2.5,2.5S13.4,11.5,12,11.5z"/>
                                 </svg>
                             </div>
                             <div>
-                                <strong>Location:</strong> Nyagahinga, Kabuga, Rwanda
+                                <strong>Location:</strong> University of Rwanda Main Campus<br>
+                                Nyagahinga, Kabuga, Rwanda
                             </div>
+                        </div>
+
+                        <div style="display: flex; margin-bottom: 12px;">
+                            <div style="color: #8e24aa; margin-right: 15px; font-size: 18px; min-width: 24px;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#8e24aa">
+                                    <path d="M20,4H4C2.9,4,2,4.9,2,6v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,18H4V8l8,5l8-5V18z M12,11L4,6h16L12,11z"/>
+                                </svg>
+                            </div>
+                            
                         </div>
                     </div>
 
-                    <a href="<%= rsvpLink %>" style="display: block; width: 250px; background: linear-gradient(to right, #4CAF50, #2E7D32); color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; padding: 16px 0; text-align: center; border-radius: 50px; margin: 30px auto;">
-                        Accept Invitation
+                    <a href="<%= rsvpLink %>" style="display: block; width: 250px; background: linear-gradient(to right, #ff9800, #f57c00); color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; padding: 16px 0; text-align: center; border-radius: 50px; margin: 30px auto;">
+                        Download Invitation
                     </a>
 
+                    <h3 style="color: #7b1fa2; font-size: 20px; margin-bottom: 15px;">Important Information</h3>
+                    <ul style="color: #555555; font-size: 16px; margin-bottom: 25px; padding-left: 20px;">
+                        <li>Please arrive at least 45 minutes before the ceremony begins</li>
+                        <li>Graduates should report to the assembly area by 8:15 AM</li>
+                        <li>Professional photography services will be available</li>
+                        <li>A reception will follow the ceremony in the University Courtyard</li>
+                    </ul>
+
                     <p style="color: #555555; font-size: 16px; margin-bottom: 25px;">
-                        We would be honored by <%= companyName %>'s presence at this momentous occasion.
+                        We look forward to celebrating this special day with you and your family.
                     </p>
 
                     <p style="color: #555555; font-size: 16px; margin-bottom: 25px;">
-                        Sincerely,<br /><strong>Michael Johnson</strong><br />Director of Corporate Relations<br />University of Rwanda
+                        Sincerely,<br>
+                        <strong>Dr. Elizabeth Mbabazi</strong><br>
+                        Dean of Students<br>
+                        University of Rwanda
                     </p>
                 </td>
             </tr>
 
             <!-- Footer -->
             <tr>
-                <td style="background-color: #0d47a1; color: #ecf0f1; padding: 25px 30px; text-align: center; font-size: 14px;">
+                <td style="background-color: #7b1fa2; color: #ecf0f1; padding: 25px 30px; text-align: center; font-size: 14px;">
                     <p style="margin: 0;">University of Rwanda &copy; 2025. All rights reserved.</p>
-                    <p style="margin-top: 15px; color: #bdc3c7;">
-                        KN 75 Street, Nyarugenge, Kigali
+                    <p style="margin-top: 15px; color: #e1bee7;">
+                        For questions about the ceremony, contact:<br>
+                        <a href="mailto:graduation@ur.ac.rw" style="color: #e1bee7;">graduation@ur.ac.rw</a> or call (250) 123-4567
                     </p>
                 </td>
             </tr>

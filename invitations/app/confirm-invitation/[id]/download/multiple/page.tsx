@@ -259,15 +259,17 @@ useEffect(()=>{
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <IdCard className="h-4 w-4" />
-                  <span>REG NO</span>
+                  {invitation.type === "STUDENT" ?  <span>REG NO</span> : <span>ID NUMBER</span>
+                  }
                 </div>
                 <p className="font-semibold text-gray-900 text-base">
-                  {invitation.regNumber || "Not provided"}
+                  { invitation.type === "STUDENT" ? (invitation.regNumber || "Not provided") : (invitation.idNumber || "Not provided")}
                 </p>
               </div>
             </div>
-
-            <div className="space-y-2">
+            {
+              invitation.email&&
+              <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <Mail className="h-4 w-4" />
                 <span>Email</span>
@@ -276,6 +278,8 @@ useEffect(()=>{
                 {invitation.email || "Not provided"}
               </p>
             </div>
+            }
+            
           </div>
 
           {/* Right Column */}

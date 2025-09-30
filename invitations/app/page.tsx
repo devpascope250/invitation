@@ -114,7 +114,7 @@ export default function GraduationInvitationGenerator() {
   const { mutateAsync: guestData, isPending: isGuestLoading } =
     useApiPost<InvitationCard>(
       ["create-guest"],
-      "/admin/graduates/create-invitation"
+      "/admin/graduates/create-invitation?email="+email
     );
   // Handle guest information submission
   const addGuest = async (e: React.FormEvent<HTMLFormElement>) => {
