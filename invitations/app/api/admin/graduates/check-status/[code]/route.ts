@@ -5,16 +5,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
   const { code } =  await params;   
   // get id from code invitationId:regNumber
   const invitationId = code.split(":")[0];
-
+  try{
+    
   // const regNumber = code.split(":")[1];
 
-  // const graduate = await prisma.invitationCard.findFirst({
-  //   where: {
-  //     id: invitationId,
-  //   },
-  // });
+  const graduate = await prisma.invitationCard.findFirst({
+    where: {
+      id: invitationId,
+    },
+  });
   return NextResponse.json({ message: "Graduate found"});
+  }catch(error){
 
+    return NextResponse.json({ message: "Invitation not found", error: error }, { status: 500 });
+  }
 //   if (!graduate) {
 //       return NextResponse.json({ message: "Invitation not found" }, { status: 404 });
 //   }
